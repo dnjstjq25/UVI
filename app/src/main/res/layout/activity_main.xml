@@ -202,6 +202,7 @@
                         android:textSize="19dp"></TextView>
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="wrap_content"
@@ -224,12 +225,13 @@
                         android:layout_marginTop="10dp"
                         android:background="#212121"
                         android:fontFamily="@font/nanum_gothic"
-                        android:text="지도보기"
+                        android:text="지도보기?"
                         android:textColor="#d3d3d3"
                         android:textSize="20dp"></Button>
                 </LinearLayout>
             </LinearLayout>
-        <!--↓전체 레이아웃 닫는 태그 -->
-    </LinearLayout>
-    <!--↓스크롤 뷰 닫는 태그-->
-</ScrollView></androidx.constraintlayout.widget.ConstraintLayout>
+            <!--↓전체 레이아웃 닫는 태그 -->
+        </LinearLayout>
+        <!--↓스크롤 뷰 닫는 태그-->
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

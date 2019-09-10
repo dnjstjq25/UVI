@@ -1,7 +1,9 @@
 package com.example.first;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -30,7 +32,7 @@ public class map extends AppCompatActivity
         mMap = googleMap;
 
         LatLng SEOUL = new LatLng(37.56, 126.97);
-        LatLng CheonAn = new LatLng(36.85, 127.15 );
+        LatLng CheonAn = new LatLng(36.85, 127.15);
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(SEOUL);
