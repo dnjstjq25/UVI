@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(MainActivity.this, map.class);
+                Intent intent1 = new Intent(MainActivity.this, MapActivity.class);
                 startActivity(intent1);
             }
         });

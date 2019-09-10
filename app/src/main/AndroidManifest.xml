@@ -14,7 +14,7 @@
             android:value="AIzaSyC_1gs0RvzEIbHavXS3u5qcJLsu47ZlYiI"
             ></meta-data>
 
-        <activity android:name=".map"
+        <activity android:name=".MapActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"

@@ -225,7 +225,7 @@
                         android:layout_marginTop="10dp"
                         android:background="#212121"
                         android:fontFamily="@font/nanum_gothic"
-                        android:text="지도보기?"
+                        android:text="지도보기"
                         android:textColor="#d3d3d3"
                         android:textSize="20dp"></Button>
                 </LinearLayout>
