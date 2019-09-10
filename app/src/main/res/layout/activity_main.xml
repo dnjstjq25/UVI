@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="0.9"
+    tools:context=".MainActivity">
+    <!--↓ 스크롤 뷰 레이아웃 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#121212"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-224dp">
+        <!--↓ 전체화면 레이아웃 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#121212"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+                    <!--↓GPS 태그 -->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/line"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:padding="10dp"
+                        android:text="위치 "
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></TextView>
+                    <!--↓지역명 태그-->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/line2"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:gravity="right"
+                        android:padding="10dp"
+                        android:text="천안시 두정동"
+                        android:textColor="#d3d3d3"
+                        android:textSize="26dp"></TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="vertical">
+                    <!--↓조도 태그 -->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/line"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:padding="10dp"
+                        android:text="조도"
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></TextView>
+                    <!--↓조도 수치 태그-->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/line2"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:gravity="right"
+                        android:padding="10dp"
+                        android:text="132000lx"
+                        android:textColor="#FFE400"
+                        android:textSize="26dp"></TextView>
+                </LinearLayout>
+                <!--↓전체 레이아웃 닫는 태그 -->
+            </LinearLayout>
+
+            <!--↓두번째 줄 태그-->
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#121212"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+                    <!--↓태양천정각 태그 -->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/line"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:padding="10dp"
+                        android:text="태양천정각"
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></TextView>
+                    <!--↓태양천정각 수치 태그-->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/line2"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:gravity="right"
+                        android:padding="10dp"
+                        android:text="34°"
+                        android:textColor="#FFBB00"
+                        android:textSize="26dp"></TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="vertical">
+                    <!--↓UVI 그림 태그 -->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/line"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:padding="10dp"
+                        android:text="UVI 단계"
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></TextView>
+                    <!--↓UVI 단계 태그-->
+                    <TextView
+                        android:layout_width="180dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/line2"
+                        android:drawableLeft="@drawable/green"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:gravity="right"
+                        android:padding="10dp"
+                        android:text="1단계"
+                        android:textColor="#3ea72d"
+                        android:textSize="26dp"></TextView>
+                </LinearLayout>
+            </LinearLayout>
+            <!--↓세번째 줄 태그-->
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#121212"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+                    <!--↓주의사항 태그 -->
+                    <TextView
+                        android:layout_width="380dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/line"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:padding="10dp"
+                        android:text="단계별 주의사항"
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></TextView>
+
+                    <!--↓주의사항 하단 태그-->
+                    <TextView
+                        android:layout_width="380dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/line2"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="- 햇볕 노출에 대한 보호조치가 필요하지않음\n\n- 민감한 피부를 가진 분은 차단제 필수!\n"
+                        android:textColor="#ffffff"
+                        android:textSize="19dp"></TextView>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#121212"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+                    <!--↓주의사항 태그 -->
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="380dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="#212121"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:text="지도보기"
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></Button>
+                </LinearLayout>
+            </LinearLayout>
+        <!--↓전체 레이아웃 닫는 태그 -->
+    </LinearLayout>
+    <!--↓스크롤 뷰 닫는 태그-->
+</ScrollView></androidx.constraintlayout.widget.ConstraintLayout>
