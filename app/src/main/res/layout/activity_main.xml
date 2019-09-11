@@ -5,29 +5,29 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="0.9"
     tools:context=".MainActivity">
+
     <!--↓ 스크롤 뷰 레이아웃 -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#121212"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="-224dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <!--↓ 전체화면 레이아웃 -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#121212"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="180dp"
@@ -48,6 +48,7 @@
                         android:textSize="20dp"></TextView>
                     <!--↓지역명 태그-->
                     <TextView
+                        android:id="@+id/gpsText"
                         android:layout_width="180dp"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
@@ -78,13 +79,14 @@
                         android:textSize="20dp"></TextView>
                     <!--↓조도 수치 태그-->
                     <TextView
+                        android:id="@+id/illumText"
                         android:layout_width="180dp"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
                         android:fontFamily="@font/nanum_gothic"
                         android:gravity="right"
                         android:padding="10dp"
-                        android:text="132000lx"
+                        android:text="0lx"
                         android:textColor="#FFE400"
                         android:textSize="26dp"></TextView>
                 </LinearLayout>
@@ -93,13 +95,10 @@
 
             <!--↓두번째 줄 태그-->
             <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#121212"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="180dp"
@@ -120,6 +119,7 @@
                         android:textSize="20dp"></TextView>
                     <!--↓태양천정각 수치 태그-->
                     <TextView
+                        android:id="@+id/solarZenithText"
                         android:layout_width="180dp"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
@@ -150,6 +150,7 @@
                         android:textSize="20dp"></TextView>
                     <!--↓UVI 단계 태그-->
                     <TextView
+                        android:id="@+id/uviText"
                         android:layout_width="180dp"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
@@ -160,17 +161,34 @@
                         android:text="1단계"
                         android:textColor="#3ea72d"
                         android:textSize="26dp"></TextView>
+
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/startButton"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="#212121"
+                    android:fontFamily="@font/nanum_gothic"
+                    android:text="측정하기"
+                    android:textColor="#d3d3d3"
+                    android:textSize="20dp"></Button>
+            </LinearLayout>
+
             <!--↓세번째 줄 태그-->
             <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#121212"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="380dp"
@@ -191,6 +209,7 @@
 
                     <!--↓주의사항 하단 태그-->
                     <TextView
+                        android:id="@+id/noticeText"
                         android:layout_width="380dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/line2"
@@ -204,22 +223,19 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout4"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#121212"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="380dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:orientation="vertical">
                     <!--↓주의사항 태그 -->
                     <Button
-                        android:id="@+id/button"
+                        android:id="@+id/mapButton"
                         android:layout_width="380dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"

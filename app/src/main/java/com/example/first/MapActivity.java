@@ -11,8 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapActivity extends AppCompatActivity
-        implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -48,8 +47,5 @@ public class MapActivity extends AppCompatActivity
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(CheonAn));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(7));
-
-
     }
-
 }
