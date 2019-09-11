@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // GPS 측정 및 태양천정각, UVI 계산
         gpsText = (TextView) findViewById(R.id.gpsText);
-        solarZenithText = (TextView)findViewById(R.id.solarZenithText);
+        solarZenithText = (TextView) findViewById(R.id.solarZenithText);
         startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override

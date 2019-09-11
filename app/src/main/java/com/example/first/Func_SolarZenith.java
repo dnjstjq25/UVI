@@ -45,7 +45,7 @@ public class Func_SolarZenith {
     double elevation_deg;
     double solar_zenith;
 
-    public double getSolarZenith(){
+    public double getSolarZenith() {
         fc = new func();
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
