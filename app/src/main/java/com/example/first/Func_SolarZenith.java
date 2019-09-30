@@ -45,12 +45,12 @@ public class Func_SolarZenith {
     double elevation_deg;
     double solar_zenith;
 
-    public double getSolarZenith(double lat) {
+    public double getSolarZenith() {
         fc = new func();
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        this.lat = lat;
-        lat_rad = fc.deg2rad(this.lat);
+        lat = 36.879519;
+        lat_rad = fc.deg2rad(lat);
 
         dt = Calendar.getInstance();
         format_time = format.format(dt.getTime());
@@ -66,6 +66,6 @@ public class Func_SolarZenith {
 
         solar_zenith = (fc.rad2deg(0.5 * PI - elevation_rad));
 
-        return Math.round(solar_zenith * 10000) / 10000.0;  // 소수 넷째자리까지 표현
+        return solar_zenith;
     }
 }

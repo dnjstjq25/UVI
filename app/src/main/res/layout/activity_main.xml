@@ -55,9 +55,9 @@
                         android:fontFamily="@font/nanum_gothic"
                         android:gravity="right"
                         android:padding="10dp"
-                        android:text="위도 : 0.0\n경도 : 0.0"
+                        android:text="천안시 두정동"
                         android:textColor="#d3d3d3"
-                        android:textSize="17dp"></TextView>
+                        android:textSize="26dp"></TextView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -126,7 +126,7 @@
                         android:fontFamily="@font/nanum_gothic"
                         android:gravity="right"
                         android:padding="10dp"
-                        android:text="0.0°"
+                        android:text="34°"
                         android:textColor="#FFBB00"
                         android:textSize="26dp"></TextView>
                 </LinearLayout>
@@ -154,12 +154,13 @@
                         android:layout_width="180dp"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
+                        android:drawableLeft="@drawable/green"
                         android:fontFamily="@font/nanum_gothic"
                         android:gravity="right"
                         android:padding="10dp"
-                        android:text="null"
+                        android:text="1단계"
                         android:textColor="#3ea72d"
-                        android:textSize="24dp"></TextView>
+                        android:textSize="26dp"></TextView>
 
                 </LinearLayout>
             </LinearLayout>
@@ -233,6 +234,16 @@
                     android:layout_marginLeft="16dp"
                     android:orientation="vertical">
                     <!--↓주의사항 태그 -->
+                    <Button
+                        android:id="@+id/mapButton"
+                        android:layout_width="380dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="#212121"
+                        android:fontFamily="@font/nanum_gothic"
+                        android:text="지도보기"
+                        android:textColor="#d3d3d3"
+                        android:textSize="20dp"></Button>
                 </LinearLayout>
             </LinearLayout>
             <!--↓전체 레이아웃 닫는 태그 -->
