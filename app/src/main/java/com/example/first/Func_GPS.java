@@ -19,8 +19,6 @@ import android.provider.Settings;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import java.util.Timer;
-
 public class Func_GPS extends Service implements LocationListener {
 
     private final Context mConText;

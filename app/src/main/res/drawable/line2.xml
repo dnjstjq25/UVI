@@ -5,17 +5,18 @@
             <solid android:color="#212121" />
             <corners
                 android:bottomLeftRadius="12dp"
-                android:bottomRightRadius="12dp"
-                />
+                android:bottomRightRadius="12dp" />
         </shape>
     </item>
-    <item android:left="1dp" android:right="1dp" android:bottom="1dp">
+    <item
+        android:bottom="1dp"
+        android:left="1dp"
+        android:right="1dp">
         <shape android:shape="rectangle">
             <solid android:color="#212121" />
             <corners
                 android:bottomLeftRadius="12dp"
-                android:bottomRightRadius="12dp"
-                />
+                android:bottomRightRadius="12dp" />
         </shape>
     </item>
 </layer-list>

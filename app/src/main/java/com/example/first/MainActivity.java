@@ -3,22 +3,27 @@ package com.example.first;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.tensorflow.lite.Interpreter;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -27,8 +32,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor lightSensor;
     private TextView illumText;
     private TextView solarZenithText;
+    private TextView uviText;
     private Button startButton;
-    private Button mapButton;
+    //    private Button mapButton;
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
     private final int PERMISSIONS_ACCESS_COARSE_LOCATION = 1001;
     private boolean isAccessFineLocation = false;
@@ -41,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Calculate Solar Zenith class
     private Func_SolarZenith funcSolarZenith;
 
-    private float illumValue;
+    private int illumValue;
     private double latitude;
     private double longitude;
     private double solarZenith;
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // GPS 측정 및 태양천정각, UVI 계산
         gpsText = (TextView) findViewById(R.id.gpsText);
         solarZenithText = (TextView) findViewById(R.id.solarZenithText);
+        uviText = (TextView) findViewById(R.id.uviText);
         startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,15 +84,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // GPS 사용유무 가져오기
                 if (gps.isGetLocation()) {
+                    // gps 출력
                     latitude = gps.getLatitude();
                     longitude = gps.getLongitude();
-
                     gpsText.setText("위도 : " + String.valueOf(latitude) + "\n경도 : " + String.valueOf(longitude));
 
-                    solarZenith = funcSolarZenith.getSolarZenith();
+                    // 태양천정각 출력
+                    solarZenith = funcSolarZenith.getSolarZenith(latitude);
                     solarZenithText.setText(solarZenith + "°");
 
-                    //gps.stopUsingGPS();
+                    // UVI 출력
+                    String[] illum = String.valueOf(illumText.getText()).split(" ");
+//                    String[] input_1 = new String[]{Double.toString(solarZenith)};
+//                    double[] input_2 = new double[]{Double.parseDouble(illum[0])};
+//                    Object[][] inputs = new Object[][]{{input_1}, {input_2}};
+////                    double[][] input = new double[][]{{solarZenith}, {Double.parseDouble(String.valueOf(uviText.getText()))}};
+////                    java.util.Map<Integer, Object> outputs = new java.util.HashMap();
+//                    double[] output = new double[]{0};
+////                    outputs.put(0, output);
+//                    Interpreter tflite = getTfliteInterpreter("model.tflite");
+////                    tflite.runForMultipleInputsOutputs(inputs, outputs);
+//                    tflite.run(inputs, output);
+//                    uviText.setText(String.valueOf(output[0]));
+
+                    uviText.setText(Double.toString(solarZenith) + "\n" + illum[0]);
+
+                    gps.stopUsingGPS();
                 } else {
                     // GPS를 사용할 수 없을경우
                     gps.showSettingAlert();
@@ -93,15 +117,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        // 맵
-        mapButton = (Button) findViewById(R.id.mapButton);
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent mapIntent = new Intent(MainActivity.this, MapActivity.class);
-                startActivity(mapIntent);
-            }
-        });
+//        // 맵
+//        mapButton = (Button) findViewById(R.id.mapButton);
+//        mapButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent mapIntent = new Intent(MainActivity.this, MapActivity.class);
+//                startActivity(mapIntent);
+//            }
+//        });
 
         callPermission();  // 권한 요청
     }
@@ -121,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
-            illumValue = sensorEvent.values[0];
+            illumValue = (int) sensorEvent.values[0];
             illumText.setText("" + illumValue + " lx");
         }
     }
@@ -159,5 +183,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (isAccessFineLocation && isAccessCoarseLocation) {
             isPermission = true;
         }
+    }
+
+    // 모델 파일 인터프리터를 생성하는 함수
+    private Interpreter getTfliteInterpreter(String modelPath) {
+        try {
+            return new Interpreter(loadModelFile(MainActivity.this, modelPath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 모델을 읽어오는 함수 (텐서플로 라이트 홈페이지 참고)
+    // MappedByteBuffer 바이트 버퍼를 Interpreter 객체에 전달하면 모델 해석을 할 수 있다.
+    private MappedByteBuffer loadModelFile(Activity activity, String modelPath) throws IOException {
+        AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(modelPath);
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
 }
