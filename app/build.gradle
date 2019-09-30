@@ -17,6 +17,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // 모델 파일이 압축 방지
+    aaptOptions {
+        noCompress "tflite"
+    }
 }
 
 dependencies {
@@ -29,4 +34,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+
+    // 텐서플로우라이트 모듈 추가
+    implementation 'org.tensorflow:tensorflow-lite:+'
 }
