@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //                    Interpreter tflite = getTfliteInterpreter("model.tflite");
 ////                    tflite.runForMultipleInputsOutputs(inputs, outputs);
 //                    tflite.run(inputs, output);
-//                    uviText.setText(String.valueOf(output[0]));
+                    uviText.setText(solarZenith +"\n" + illum[0]);
 
-                    uviText.setText(Double.toString(solarZenith) + "\n" + illum[0]);
+                    uviText.setText(Double.toString(solarZenith) + "\n" + Double.parseDouble(illum[0]));
 
                     gps.stopUsingGPS();
                 } else {

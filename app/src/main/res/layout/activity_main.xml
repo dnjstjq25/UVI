@@ -53,7 +53,7 @@
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
                         android:fontFamily="@font/nanum_gothic"
-                        android:gravity="right"
+                        android:gravity="left"
                         android:padding="10dp"
                         android:text="위도 : 0.0\n경도 : 0.0"
                         android:textColor="#d3d3d3"
