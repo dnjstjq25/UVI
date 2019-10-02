@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     // gps 출력
                     latitude = gps.getLatitude();
                     longitude = gps.getLongitude();
-                    gpsText.setText("위도 : " + String.valueOf(latitude) + "\n경도 : " + String.valueOf(longitude));
+                    gpsText.setText("위도 : " + latitude + "\n경도 : " + longitude);
 
                     // 태양천정각 출력
                     solarZenith = funcSolarZenith.getSolarZenith(latitude);
@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //                    Interpreter tflite = getTfliteInterpreter("model.tflite");
 ////                    tflite.runForMultipleInputsOutputs(inputs, outputs);
 //                    tflite.run(inputs, output);
-                    uviText.setText(solarZenith +"\n" + illum[0]);
 
-                    uviText.setText(Double.toString(solarZenith) + "\n" + Double.parseDouble(illum[0]));
+                    // 태양천정각, 조도 출력 확인용
+//                    uviText.setText(Double.toString(solarZenith) + "\n" + Double.parseDouble(illum[0]));
 
                     gps.stopUsingGPS();
                 } else {
@@ -116,17 +116,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-
-//        // 맵
-//        mapButton = (Button) findViewById(R.id.mapButton);
-//        mapButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent mapIntent = new Intent(MainActivity.this, MapActivity.class);
-//                startActivity(mapIntent);
-//            }
-//        });
-
         callPermission();  // 권한 요청
     }
 
@@ -155,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    // 전화번호 권한 요청
+    // 권한 요청
     private void callPermission() {
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
