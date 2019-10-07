@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#121212">
 
-    <!--↓ 스크롤 뷰 레이아웃 -->
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#121212"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <!--↓ 전체화면 레이아웃 -->
-        <LinearLayout
+        <TableLayout
+            android:id="@+id/table1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/linear1"
+            app:layout_constraintEnd_toEndOf="@+id/constraint1"
+            app:layout_constraintStart_toStartOf="@+id/constraint1"
+            app:layout_constraintTop_toTopOf="@id/constraint1">
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#121212"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical">
-                    <!--↓GPS 태그 -->
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
                     <TextView
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
                         android:background="@drawable/line"
                         android:fontFamily="@font/nanum_gothic"
                         android:padding="10dp"
-                        android:text="위치 "
+                        android:text="위치"
                         android:textColor="#d3d3d3"
-                        android:textSize="20dp"></TextView>
-                    <!--↓지역명 태그-->
+                        android:textSize="20dp" />
+
                     <TextView
                         android:id="@+id/gpsText"
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
                         android:fontFamily="@font/nanum_gothic"
@@ -57,70 +57,66 @@
                         android:padding="10dp"
                         android:text="위도 : 0.0\n경도 : 0.0"
                         android:textColor="#d3d3d3"
-                        android:textSize="17dp"></TextView>
+                        android:textSize="17dp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:orientation="vertical">
-                    <!--↓조도 태그 -->
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
                     <TextView
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
                         android:background="@drawable/line"
                         android:fontFamily="@font/nanum_gothic"
                         android:padding="10dp"
                         android:text="조도"
                         android:textColor="#d3d3d3"
-                        android:textSize="20dp"></TextView>
-                    <!--↓조도 수치 태그-->
+                        android:textSize="20dp" />
+
                     <TextView
                         android:id="@+id/illumText"
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
                         android:fontFamily="@font/nanum_gothic"
                         android:gravity="right"
                         android:padding="10dp"
-                        android:text="0lx"
+                        android:text="0 lx"
                         android:textColor="#FFE400"
-                        android:textSize="26dp"></TextView>
+                        android:textSize="26dp" />
                 </LinearLayout>
-                <!--↓전체 레이아웃 닫는 태그 -->
-            </LinearLayout>
+            </TableRow>
 
-            <!--↓두번째 줄 태그-->
-            <LinearLayout
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#121212"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical">
-                    <!--↓태양천정각 태그 -->
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
                     <TextView
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
                         android:background="@drawable/line"
                         android:fontFamily="@font/nanum_gothic"
                         android:padding="10dp"
                         android:text="태양천정각"
                         android:textColor="#d3d3d3"
-                        android:textSize="20dp"></TextView>
-                    <!--↓태양천정각 수치 태그-->
+                        android:textSize="20dp" />
+
                     <TextView
                         android:id="@+id/solarZenithText"
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
                         android:fontFamily="@font/nanum_gothic"
@@ -128,30 +124,30 @@
                         android:padding="10dp"
                         android:text="0.0°"
                         android:textColor="#FFBB00"
-                        android:textSize="26dp"></TextView>
+                        android:textSize="26dp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:orientation="vertical">
-                    <!--↓UVI 그림 태그 -->
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
                     <TextView
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="10dp"
                         android:background="@drawable/line"
                         android:fontFamily="@font/nanum_gothic"
                         android:padding="10dp"
-                        android:text="UVI 단계"
+                        android:text="자외선지수"
                         android:textColor="#d3d3d3"
-                        android:textSize="20dp"></TextView>
-                    <!--↓UVI 단계 태그-->
+                        android:textSize="20dp" />
+
                     <TextView
                         android:id="@+id/uviText"
-                        android:layout_width="180dp"
+                        android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:background="@drawable/line2"
                         android:fontFamily="@font/nanum_gothic"
@@ -159,84 +155,73 @@
                         android:padding="10dp"
                         android:text="null"
                         android:textColor="#3ea72d"
-                        android:textSize="24dp"></TextView>
-
+                        android:textSize="26dp" />
                 </LinearLayout>
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linear2"
+            app:layout_constraintEnd_toEndOf="@id/constraint1"
+            app:layout_constraintStart_toStartOf="@id/constraint1"
+            app:layout_constraintTop_toBottomOf="@+id/table1">
+
+            <Button
+                android:id="@+id/startButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/startButton"
-                    android:layout_width="380dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="#212121"
-                    android:fontFamily="@font/nanum_gothic"
-                    android:text="측정하기"
-                    android:textColor="#d3d3d3"
-                    android:textSize="20dp"></Button>
-            </LinearLayout>
-
-            <!--↓세번째 줄 태그-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#121212"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="380dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical">
-                    <!--↓주의사항 태그 -->
-                    <TextView
-                        android:layout_width="380dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/line"
-                        android:fontFamily="@font/nanum_gothic"
-                        android:padding="10dp"
-                        android:text="단계별 주의사항"
-                        android:textColor="#d3d3d3"
-                        android:textSize="20dp"></TextView>
-
-                    <!--↓주의사항 하단 태그-->
-                    <TextView
-                        android:id="@+id/noticeText"
-                        android:layout_width="380dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/line2"
-                        android:fontFamily="@font/nanum_gothic"
-                        android:gravity="left"
-                        android:padding="10dp"
-                        android:text="- 햇볕 노출에 대한 보호조치가 필요하지않음\n\n- 민감한 피부를 가진 분은 차단제 필수!\n"
-                        android:textColor="#ffffff"
-                        android:textSize="19dp"></TextView>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#121212"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical">
-                    <!--↓주의사항 태그 -->
-                </LinearLayout>
-            </LinearLayout>
-            <!--↓전체 레이아웃 닫는 태그 -->
+                android:background="#212121"
+                android:fontFamily="@font/nanum_gothic"
+                android:text="측정하기"
+                android:textColor="#d3d3d3"
+                android:textSize="20dp" />
         </LinearLayout>
-        <!--↓스크롤 뷰 닫는 태그-->
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/constraint1"
+            app:layout_constraintEnd_toEndOf="@+id/constraint1"
+            app:layout_constraintStart_toStartOf="@+id/constraint1"
+            app:layout_constraintTop_toBottomOf="@+id/linear1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/line"
+                android:fontFamily="@font/nanum_gothic"
+                android:padding="10dp"
+                android:text="단계별 주의사항"
+                android:textColor="#d3d3d3"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/noticeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/line2"
+                android:fontFamily="@font/nanum_gothic"
+                android:gravity="left"
+                android:padding="10dp"
+                android:text="- 햇볕 노출에 대한 보호 조치가 필요하지않음 \n\n- 민감한 피부를 가진 분은 차단제 필수!\n\n- 그러니까 집에 틀어박혀 있으셈\n\n- 김호영 만세\n"
+                android:textColor="#ffffff"
+                android:textSize="19dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
