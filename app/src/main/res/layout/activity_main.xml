@@ -55,7 +55,7 @@
                         android:fontFamily="@font/nanum_gothic"
                         android:gravity="left"
                         android:padding="10dp"
-                        android:text="위도 : 0.0\n경도 : 0.0"
+                        android:text="위도 : 0.0°\n경도 : 0.0°"
                         android:textColor="#d3d3d3"
                         android:textSize="17dp" />
                 </LinearLayout>
@@ -179,7 +179,7 @@
                 android:id="@+id/startButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#212121"
+                android:background="@drawable/line3"
                 android:fontFamily="@font/nanum_gothic"
                 android:text="측정하기"
                 android:textColor="#d3d3d3"
