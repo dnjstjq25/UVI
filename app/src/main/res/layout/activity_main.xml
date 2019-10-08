@@ -221,6 +221,7 @@
                 android:text="- 햇볕 노출에 대한 보호 조치가 필요하지않음 \n\n- 민감한 피부를 가진 분은 차단제 필수!\n\n- 그러니까 집에 틀어박혀 있으셈\n\n- 김호영 만세\n"
                 android:textColor="#ffffff"
                 android:textSize="19dp" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
