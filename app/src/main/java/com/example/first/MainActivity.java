@@ -17,6 +17,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
@@ -59,10 +72,115 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private double solarZenith;
     private float uvi;
 
+
+
+
+    //okhttp 성공 실패
+    private class CallbackToDownloadFile implements Callback {
+
+        private File directory;
+        private File fileToBeDownloaded;
+
+        public CallbackToDownloadFile(String directory, String fileName) {
+            this.directory = new File(directory);
+            this.fileToBeDownloaded = new File(this.directory.getAbsolutePath() + "/" + fileName);
+        }
+
+        @Override
+        public void onFailure(Request request, IOException e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(
+                            MainActivity.this,
+                            "파일을 다운로드할 수 없습니다. 인터넷 연결을 확인하세요.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
+        }
+
+        @Override
+        public void onResponse(Response response) throws IOException {
+            if (!this.directory.exists()) {
+                this.directory.mkdirs();
+            }
+
+            if (this.fileToBeDownloaded.exists()) {
+                this.fileToBeDownloaded.delete();
+            }
+
+            try {
+                this.fileToBeDownloaded.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "다운로드 파일을 생성할 수 없습니다.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
+
+                return;
+            }
+
+            InputStream is = response.body().byteStream();
+            OutputStream os = new FileOutputStream(this.fileToBeDownloaded);
+
+            final int BUFFER_SIZE = 2048;
+            byte[] data = new byte[BUFFER_SIZE];
+
+            int count;
+            long total = 0;
+
+            while ((count = is.read(data)) != -1) {
+                total += count;
+                os.write(data, 0, count);
+            }
+
+            os.flush();
+            os.close();
+            is.close();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(
+                            MainActivity.this,
+                            "다운로드가 완료되었습니다.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
+        }
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //okhttp 경로 파일명
+        CallbackToDownloadFile cbToDownloadFile = new CallbackToDownloadFile(
+                "이곳이 문제가 아닐까 싶다 경로를 모르겠음",
+                "model"
+        );
+
+        //okhttp 선언
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://210.102.142.16/model.tflite")
+                .build();
+
+        //okhttp 요청
+        client.newCall(request).enqueue(cbToDownloadFile);
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
