@@ -19,7 +19,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/linear1"
             app:layout_constraintEnd_toEndOf="@+id/constraint1"
             app:layout_constraintStart_toStartOf="@+id/constraint1"
@@ -191,22 +190,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@id/constraint1"
+            app:layout_constraintBottom_toTopOf="@id/linear3"
             app:layout_constraintEnd_toEndOf="@+id/constraint1"
             app:layout_constraintStart_toStartOf="@+id/constraint1"
             app:layout_constraintTop_toBottomOf="@+id/linear1">
 
             <TextView
+                android:id="@+id/notice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/line"
                 android:fontFamily="@font/nanum_gothic"
                 android:padding="10dp"
-                android:text="단계별 주의사항"
+                android:text="자외선지수 단계 : "
                 android:textColor="#d3d3d3"
                 android:textSize="20dp" />
 
@@ -218,10 +218,36 @@
                 android:fontFamily="@font/nanum_gothic"
                 android:gravity="left"
                 android:padding="10dp"
-                android:text="- 햇볕 노출에 대한 보호 조치가 필요하지않음 \n\n- 민감한 피부를 가진 분은 차단제 필수!\n\n- 그러니까 집에 틀어박혀 있으셈\n\n- 김호영 만세\n"
+                android:text="측정하기를 눌러주세요\n"
                 android:textColor="#ffffff"
                 android:textSize="19dp" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/constraint1"
+            app:layout_constraintEnd_toEndOf="@+id/constraint1"
+            app:layout_constraintStart_toStartOf="@+id/constraint1"
+            app:layout_constraintTop_toBottomOf="@+id/linear2">
+
+            <TextView
+                android:id="@+id/madeby"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanum_gothic"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="made by 유비무환"
+                android:textColor="#ffffff"
+                android:textSize="15dp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

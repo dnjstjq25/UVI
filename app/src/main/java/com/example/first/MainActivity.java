@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,20 +14,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -37,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView solarZenithText;
     private TextView gpsText;
     private TextView uviText;
+    private TextView notice;
+    private TextView noticeText;
     private Button startButton;
 
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
@@ -54,16 +45,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Calculate UVI class
     private Func_UVI funcUVI;
 
+    // Notice UVI class
+    private Func_Notice funcNotice;
+
+    // BackPressCloseHandler class
+    private BackPressCloseHandler backPressCloseHandler;
+
     private int illumValue;
     private double latitude;
     private double longitude;
     private double solarZenith;
-    private String uvi;
+    private float uvi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        backPressCloseHandler = new BackPressCloseHandler(this);
 
         // 조도
         illumText = (TextView) findViewById(R.id.illumText);
@@ -77,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         gpsText = (TextView) findViewById(R.id.gpsText);
         solarZenithText = (TextView) findViewById(R.id.solarZenithText);
         uviText = (TextView) findViewById(R.id.uviText);
+        notice = (TextView) findViewById(R.id.notice);
+        noticeText = (TextView) findViewById(R.id.noticeText);
         startButton = (Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 gps = new Func_GPS(MainActivity.this);
                 funcSolarZenith = new Func_SolarZenith();
                 funcUVI = new Func_UVI();
+                funcNotice = new Func_Notice();
 
                 // GPS 사용유무 가져오기
                 if (gps.isGetLocation()) {
@@ -102,17 +104,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     solarZenith = funcSolarZenith.getSolarZenith(latitude);
                     solarZenithText.setText(solarZenith + "°");
 
-                    // 태양천정각, 조도 출력 테스트용
-//                    String[] illum = String.valueOf(illumText.getText()).split(" ");
-//                    uviText.setText(Double.toString(solarZenith) + "\n" + Double.parseDouble(illum[0]));
-
                     // UVI 출력
-                   uvi = funcUVI.Output(MainActivity.this, (float)solarZenith, (float)illumValue);
+                    uvi = funcUVI.Output(MainActivity.this, (float) solarZenith, (float) illumValue);
+                    uviText.setText(String.format("%.5f", uvi));
 
-                    // UVI 출력 테스트용
-                    // uvi = funcUVI.Test(MainActivity.this);
-
-                    uviText.setText(uvi);
+                    // UVI 단계별 안내 출력
+                    funcNotice.changeNotice(uvi, uviText, notice, noticeText);
 
                     gps.stopUsingGPS();
                 } else {
@@ -176,5 +173,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (isAccessFineLocation && isAccessCoarseLocation) {
             isPermission = true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        backPressCloseHandler.onBackPressed();
     }
 }
