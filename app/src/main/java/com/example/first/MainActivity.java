@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView uviText;
     private TextView notice;
     private TextView noticeText;
+    private Button illumButton;
     private Button startButton;
 
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // BackPressCloseHandler class
     private BackPressCloseHandler backPressCloseHandler;
 
+    private boolean illumFlag;
     private int illumValue;
     private double latitude;
     private double longitude;
@@ -64,13 +66,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
-        // 조도
+        // 조도 측정
         illumText = (TextView) findViewById(R.id.illumText);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if (lightSensor == null) {
-            Toast.makeText(this, "조도 센서를 찾을 수 없습니다!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "조도 센서를 찾을 수 없습니다!", Toast.LENGTH_SHORT).show();
+            illumButton.setEnabled(true);
         }
+        illumFlag = true;
+        illumButton = (Button) findViewById(R.id.illumButton);
+        illumButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (illumFlag) {
+                    illumFlag = false;
+                    illumButton.setText("측정 중지");
+                    sensorManager.registerListener(MainActivity.this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                } else {
+                    illumFlag = true;
+                    illumButton.setText("조도 측정");
+                    sensorManager.unregisterListener(MainActivity.this);
+                }
+            }
+        });
 
         // GPS 측정 및 태양천정각, UVI 계산
         gpsText = (TextView) findViewById(R.id.gpsText);
@@ -124,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
