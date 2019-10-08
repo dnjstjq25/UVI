@@ -37,4 +37,7 @@ dependencies {
 
     // 텐서플로우라이트 모듈 추가
     implementation 'org.tensorflow:tensorflow-lite:+'
+
+    // OkHttp 모듈 추가
+    implementation 'com.squareup.okhttp:okhttp:2.4.0'
 }
