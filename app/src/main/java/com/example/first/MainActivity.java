@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //                    uviText.setText(Double.toString(solarZenith) + "\n" + Double.parseDouble(illum[0]));
 
                     // UVI 출력
-//                    uvi = funcUVI.Output(MainActivity.this, (float)solarZenith, (float)illumValue);
+                   uvi = funcUVI.Output(MainActivity.this, (float)solarZenith, (float)illumValue);
 
                     // UVI 출력 테스트용
-                    uvi = funcUVI.Test(MainActivity.this);
+                    // uvi = funcUVI.Test(MainActivity.this);
 
                     uviText.setText(uvi);
 

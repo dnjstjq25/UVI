@@ -22,27 +22,15 @@ public class Func_UVI {
     }
 
     public String Output(Activity activity, float solarZenith, float illumination) {
-//        float[] input = new float[]{solarZenith, illumination};
-//        float[] output = new float[]{0};
-//
-//        Interpreter tflite = getTfliteInterpreter(activity,"model.tflite");
-//        tflite.run(input, output);
-//
-//        return String.valueOf(output[0]);
+        float[][] input = new float[1][2];
+        float[][] output = new float[][]{{0}};
+        input[0][0]=solarZenith;
+        input[0][1]=illumination/10000.0F;
 
-        float[] input_1 = new float[]{solarZenith};
-        float[] input_2 = new float[]{illumination};
-        Object[] inputs = {input_1, input_2};
 
-        java.util.Map<Integer, Object> outputs = new java.util.HashMap<>();
-
-        float[] output = new float[]{0};
-        outputs.put(0, output);
-
-        Interpreter tflite = getTfliteInterpreter(activity, "model.tflite");
-        tflite.runForMultipleInputsOutputs(inputs, outputs);
-
-        return String.valueOf(output[0]);
+        Interpreter tflite = getTfliteInterpreter(activity,"model.tflite");
+        tflite.run(input, output);
+        return String.valueOf(output[0][0]);
     }
 
     // 모델 파일 인터프리터를 생성하는 함수
