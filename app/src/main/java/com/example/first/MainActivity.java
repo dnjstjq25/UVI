@@ -1,6 +1,8 @@
 package com.example.first;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,6 +14,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -28,7 +32,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -72,14 +78,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private double solarZenith;
     private float uvi;
 
+    static String directory;
+    private String[] permissions = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, // 기기, 사진, 미디어, 파일 엑세스 권한
+            Manifest.permission.ACCESS_FINE_LOCATION, // 위치 권한
+            Manifest.permission.ACCESS_COARSE_LOCATION // 위치 권한
+    };
 
-
+    private static final int MULTIPLE_PERMISSIONS = 101;
 
     //okhttp 성공 실패
     private class CallbackToDownloadFile implements Callback {
 
         private File directory;
         private File fileToBeDownloaded;
+
 
         public CallbackToDownloadFile(String directory, String fileName) {
             this.directory = new File(directory);
@@ -103,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         @Override
         public void onResponse(Response response) throws IOException {
             if (!this.directory.exists()) {
-                this.directory.mkdirs();
+                this.directory.mkdir();
             }
 
             if (this.fileToBeDownloaded.exists()) {
@@ -152,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 public void run() {
                     Toast.makeText(
                             MainActivity.this,
-                            "다운로드가 완료되었습니다.",
+                            "다운로드 완료",
                             Toast.LENGTH_SHORT
                     ).show();
                 }
@@ -161,16 +174,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        directory = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS + "/Capstone") + "";
+
         //okhttp 경로 파일명
         CallbackToDownloadFile cbToDownloadFile = new CallbackToDownloadFile(
-                "이곳이 문제가 아닐까 싶다 경로를 모르겠음",
-                "model"
+                directory,
+                "model.tflite"
         );
 
         //okhttp 선언
@@ -181,6 +196,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //okhttp 요청
         client.newCall(request).enqueue(cbToDownloadFile);
+
+        if (Build.VERSION.SDK_INT >= 23) { // 안드로이드 6.0 이상일 경우 퍼미션 체크
+            checkPermissions();
+        }
 
         backPressCloseHandler = new BackPressCloseHandler(this);
 
@@ -221,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View view) {
                 // 권한 요청
                 if (!isPermission) {
-                    callPermission();
+                    checkPermissions();
                     return;
                 }
 
@@ -255,8 +274,52 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-        callPermission();  // 권한 요청
+        checkPermissions();  // 위치 권한 요청
     }
+
+    private boolean checkPermissions() {
+        int result;
+        List<String> permissionList = new ArrayList<>();
+        for (String pm : permissions) {
+            result = ContextCompat.checkSelfPermission(this, pm);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(pm);
+            }
+        }
+        if (!permissionList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < permissions.length; i++) {
+                        if (permissions[i].equals(this.permissions[i])) {
+                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                                showToast_PermissionDeny();
+                            }
+                        }
+                    }
+                } else {
+                    showToast_PermissionDeny();
+                    finish(); //동의 안하면 꺼짐
+                }
+                return;
+            }
+        }
+
+    }
+
+    private void showToast_PermissionDeny() {
+        Toast.makeText(this, "권한 요청에 동의 해주셔야 이용 가능합니다. 설정에서 권한 허용 하시기 바랍니다.", Toast.LENGTH_SHORT).show();
+    }
+
+
 
     @Override
     protected void onResume() {
@@ -279,36 +342,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-    }
-
-    // 권한 요청
-    private void callPermission() {
-        // Check the SDK version and whether the permission is already granted or not.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_ACCESS_FINE_LOCATION);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_ACCESS_COARSE_LOCATION);
-        } else {
-            isPermission = true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSIONS_ACCESS_FINE_LOCATION
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            isAccessFineLocation = true;
-
-        } else if (requestCode == PERMISSIONS_ACCESS_COARSE_LOCATION
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            isAccessCoarseLocation = true;
-        }
-
-        if (isAccessFineLocation && isAccessCoarseLocation) {
-            isPermission = true;
-        }
     }
 
     @Override
