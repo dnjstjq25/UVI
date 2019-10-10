@@ -1,8 +1,6 @@
 package com.example.first;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,7 +13,6 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,15 +29,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    // GPS Tracker class
+    private Func_GPS gps;
+    // Calculate Solar Zenith class
+    private Func_SolarZenith funcSolarZenith;
+    // Calculate UVI class
+    private Func_UVI funcUVI;
+    // Notice UVI class
+    private Func_Notice funcNotice;
+    // BackPressCloseHandler class
+    private BackPressCloseHandler backPressCloseHandler;
 
     private SensorManager sensorManager;
     private Sensor lightSensor;
-
     private TextView illumText;
     private TextView solarZenithText;
     private TextView gpsText;
@@ -49,159 +53,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView noticeText;
     private Button illumButton;
     private Button startButton;
-
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
     private final int PERMISSIONS_ACCESS_COARSE_LOCATION = 1001;
     private boolean isAccessFineLocation = false;
     private boolean isAccessCoarseLocation = false;
     private boolean isPermission = false;
-
-    // GPS Tracker class
-    private Func_GPS gps;
-
-    // Calculate Solar Zenith class
-    private Func_SolarZenith funcSolarZenith;
-
-    // Calculate UVI class
-    private Func_UVI funcUVI;
-
-    // Notice UVI class
-    private Func_Notice funcNotice;
-
-    // BackPressCloseHandler class
-    private BackPressCloseHandler backPressCloseHandler;
-
     private boolean illumFlag;
     private int illumValue;
     private double latitude;
     private double longitude;
     private double solarZenith;
     private float uvi;
-
-    static String directory;
-    private String[] permissions = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, // 기기, 사진, 미디어, 파일 엑세스 권한
-            Manifest.permission.ACCESS_FINE_LOCATION, // 위치 권한
-            Manifest.permission.ACCESS_COARSE_LOCATION // 위치 권한
-    };
-
-    private static final int MULTIPLE_PERMISSIONS = 101;
-
-    //okhttp 성공 실패
-    private class CallbackToDownloadFile implements Callback {
-
-        private File directory;
-        private File fileToBeDownloaded;
-
-
-        public CallbackToDownloadFile(String directory, String fileName) {
-            this.directory = new File(directory);
-            this.fileToBeDownloaded = new File(this.directory.getAbsolutePath() + "/" + fileName);
-        }
-
-        @Override
-        public void onFailure(Request request, IOException e) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(
-                            MainActivity.this,
-                            "파일을 다운로드할 수 없습니다. 인터넷 연결을 확인하세요.",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            });
-        }
-
-        @Override
-        public void onResponse(Response response) throws IOException {
-            if (!this.directory.exists()) {
-                this.directory.mkdir();
-            }
-
-            if (this.fileToBeDownloaded.exists()) {
-                this.fileToBeDownloaded.delete();
-            }
-
-            try {
-                this.fileToBeDownloaded.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "다운로드 파일을 생성할 수 없습니다.",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                });
-
-                return;
-            }
-
-            InputStream is = response.body().byteStream();
-            OutputStream os = new FileOutputStream(this.fileToBeDownloaded);
-
-            final int BUFFER_SIZE = 2048;
-            byte[] data = new byte[BUFFER_SIZE];
-
-            int count;
-            long total = 0;
-
-            while ((count = is.read(data)) != -1) {
-                total += count;
-                os.write(data, 0, count);
-            }
-
-            os.flush();
-            os.close();
-            is.close();
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(
-                            MainActivity.this,
-                            "다운로드 완료",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            });
-        }
-    }
-
+    private String directory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        backPressCloseHandler = new BackPressCloseHandler(this);
 
-        directory = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS + "/Capstone") + "";
-
-        //okhttp 경로 파일명
+        // model 파일 다운로드
+        directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/tfmodel/") + "";
         CallbackToDownloadFile cbToDownloadFile = new CallbackToDownloadFile(
                 directory,
                 "model.tflite"
         );
-
-        //okhttp 선언
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("http://210.102.142.16/model.tflite")
                 .build();
-
-        //okhttp 요청
         client.newCall(request).enqueue(cbToDownloadFile);
-
-        if (Build.VERSION.SDK_INT >= 23) { // 안드로이드 6.0 이상일 경우 퍼미션 체크
-            checkPermissions();
-        }
-
-        backPressCloseHandler = new BackPressCloseHandler(this);
 
         // 조도 측정
         illumText = (TextView) findViewById(R.id.illumText);
@@ -240,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View view) {
                 // 권한 요청
                 if (!isPermission) {
-                    checkPermissions();
+                    callPermission();
                     return;
                 }
 
@@ -274,52 +155,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-        checkPermissions();  // 위치 권한 요청
+        callPermission();  // 권한 요청
     }
-
-    private boolean checkPermissions() {
-        int result;
-        List<String> permissionList = new ArrayList<>();
-        for (String pm : permissions) {
-            result = ContextCompat.checkSelfPermission(this, pm);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                permissionList.add(pm);
-            }
-        }
-        if (!permissionList.isEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionList.toArray(new String[permissionList.size()]), MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS: {
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < permissions.length; i++) {
-                        if (permissions[i].equals(this.permissions[i])) {
-                            if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                                showToast_PermissionDeny();
-                            }
-                        }
-                    }
-                } else {
-                    showToast_PermissionDeny();
-                    finish(); //동의 안하면 꺼짐
-                }
-                return;
-            }
-        }
-
-    }
-
-    private void showToast_PermissionDeny() {
-        Toast.makeText(this, "권한 요청에 동의 해주셔야 이용 가능합니다. 설정에서 권한 허용 하시기 바랍니다.", Toast.LENGTH_SHORT).show();
-    }
-
-
 
     @Override
     protected void onResume() {
@@ -347,5 +184,110 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onBackPressed() {
         backPressCloseHandler.onBackPressed();
+    }
+
+    // OkHttp - model 파일 다운로드 클래스
+    private class CallbackToDownloadFile implements Callback {
+        private File directory;
+        private File fileToBeDownloaded;
+
+        public CallbackToDownloadFile(String directory, String fileName) {
+            this.directory = new File(directory);
+            this.fileToBeDownloaded = new File(this.directory.getAbsolutePath() + "/" + fileName);
+        }
+
+        @Override
+        public void onFailure(Request request, IOException e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(
+                            MainActivity.this,
+                            "파일을 다운로드할 수 없습니다. 인터넷 연결을 확인하세요.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    finish();
+                }
+            });
+        }
+
+        @Override
+        public void onResponse(Response response) throws IOException {
+            if (!this.directory.exists()) {
+                this.directory.mkdir();
+            }
+            if (this.fileToBeDownloaded.exists()) {
+                this.fileToBeDownloaded.delete();
+            }
+            try {
+                this.fileToBeDownloaded.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "다운로드 파일을 생성할 수 없습니다.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        finish();
+                    }
+                });
+                return;
+            }
+
+            InputStream is = response.body().byteStream();
+            OutputStream os = new FileOutputStream(this.fileToBeDownloaded);
+            final int BUFFER_SIZE = 2048;
+            byte[] data = new byte[BUFFER_SIZE];
+            int count;
+            long total = 0;
+
+            while ((count = is.read(data)) != -1) {
+                total += count;
+                os.write(data, 0, count);
+            }
+            os.flush();
+            os.close();
+            is.close();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(
+                            MainActivity.this,
+                            "다운로드가 완료되었습니다.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
+        }
+    }
+
+    // 권한 요청
+    private void callPermission() {
+        // Check the SDK version and whether the permission is already granted or not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_ACCESS_FINE_LOCATION);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_ACCESS_COARSE_LOCATION);
+        } else {
+            isPermission = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSIONS_ACCESS_FINE_LOCATION
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            isAccessFineLocation = true;
+        } else if (requestCode == PERMISSIONS_ACCESS_COARSE_LOCATION
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            isAccessCoarseLocation = true;
+        }
+        if (isAccessFineLocation && isAccessCoarseLocation) {
+            isPermission = true;
+        }
     }
 }

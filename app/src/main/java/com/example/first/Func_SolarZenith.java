@@ -32,7 +32,6 @@ class func {
 public class Func_SolarZenith {
     func fc;
     SimpleDateFormat format;
-
     double lat;
     double lat_rad;
     Calendar dt;
