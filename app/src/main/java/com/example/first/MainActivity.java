@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -29,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     // GPS Tracker class
@@ -68,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private double solarZenith;
     private float uvi;
     private String directory;
+    private String modelPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
         backPressCloseHandler = new BackPressCloseHandler(this);
 
-        if(!isPermission2){
+        if (!isPermission2) {
             callPermission2();
         }
 
@@ -149,7 +147,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     solarZenithText.setText(solarZenith + "°");
 
                     // UVI 출력
-                    uvi = funcUVI.Output(MainActivity.this, (float) solarZenith, (float) illumValue);
+                    modelPath = directory + "/model.tflite";
+                    uvi = funcUVI.Output((float) solarZenith, (float) illumValue, modelPath);
                     uviText.setText(String.format("%.5f", uvi));
 
                     // UVI 단계별 안내 출력
@@ -285,14 +284,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void callPermission2() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     Toast.makeText(this, "저장소 사용을 위해 읽기/쓰기 권한 필요", Toast.LENGTH_SHORT).show();
                 }
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_EXTERNAL_STORAGE);
-            }
-            else{
+            } else {
                 isPermission2 = true;
             }
         }
