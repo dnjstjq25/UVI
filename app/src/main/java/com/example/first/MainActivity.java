@@ -55,9 +55,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button startButton;
     private final int PERMISSIONS_ACCESS_FINE_LOCATION = 1000;
     private final int PERMISSIONS_ACCESS_COARSE_LOCATION = 1001;
+    private final int PERMISSIONS_EXTERNAL_STORAGE = 1002;
     private boolean isAccessFineLocation = false;
     private boolean isAccessCoarseLocation = false;
+    private boolean isExternalStorage = false;
     private boolean isPermission = false;
+    private boolean isPermission2 = false;
     private boolean illumFlag;
     private int illumValue;
     private double latitude;
@@ -71,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         backPressCloseHandler = new BackPressCloseHandler(this);
+
+        if(!isPermission2){
+            callPermission2();
+        }
 
         // model 파일 다운로드
         directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/tfmodel/") + "";
@@ -277,6 +284,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    private void callPermission2() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                if(shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                    Toast.makeText(this, "저장소 사용을 위해 읽기/쓰기 권한 필요", Toast.LENGTH_SHORT).show();
+                }
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_EXTERNAL_STORAGE);
+            }
+            else{
+                isPermission2 = true;
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSIONS_ACCESS_FINE_LOCATION
@@ -285,9 +306,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else if (requestCode == PERMISSIONS_ACCESS_COARSE_LOCATION
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             isAccessCoarseLocation = true;
+        } else if (requestCode == PERMISSIONS_EXTERNAL_STORAGE
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            isExternalStorage = true;
         }
         if (isAccessFineLocation && isAccessCoarseLocation) {
             isPermission = true;
+        }
+        if (isExternalStorage) {
+            isPermission2 = true;
         }
     }
 }
