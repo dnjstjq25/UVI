@@ -266,5 +266,4 @@
                 android:textSize="15dp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
