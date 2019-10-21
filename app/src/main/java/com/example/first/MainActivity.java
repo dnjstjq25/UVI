@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean isPermission = false;
     private boolean isPermission2 = false;
     private boolean illumFlag;
+    private boolean modelFlag;
     private int illumValue;
     private double latitude;
     private double longitude;
@@ -72,22 +73,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         backPressCloseHandler = new BackPressCloseHandler(this);
+        modelFlag = false;
 
         if (!isPermission2) {
             callPermission2();
         }
 
-        // model 파일 다운로드
-        directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/tfmodel/") + "";
-        CallbackToDownloadFile cbToDownloadFile = new CallbackToDownloadFile(
-                directory,
-                "model.tflite"
-        );
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("http://210.102.142.16/model.tflite")
-                .build();
-        client.newCall(request).enqueue(cbToDownloadFile);
+        if (isPermission2) {
+            // model 파일 다운로드
+            directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/tfmodel/") + "";
+            CallbackToDownloadFile cbToDownloadFile = new CallbackToDownloadFile(
+                    directory,
+                    "model.tflite"
+            );
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("http://210.102.142.16/model.tflite")
+                    .build();
+            client.newCall(request).enqueue(cbToDownloadFile);
+            modelFlag = true;
+        }
 
         // 조도 측정
         illumText = (TextView) findViewById(R.id.illumText);
@@ -130,7 +135,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                if (illumFlag) {
+                if (!modelFlag) {
+                    Toast.makeText(MainActivity.this, "어플을 재시작 해주세요.", Toast.LENGTH_LONG).show();
+                } else if (illumFlag) {
                     Toast.makeText(MainActivity.this, "조도 측정을 먼저 눌러주세요.", Toast.LENGTH_LONG).show();
                 } else {
                     gps = new Func_GPS(MainActivity.this);
@@ -317,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
             case PERMISSIONS_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "어플을 재시작 해주세요.", Toast.LENGTH_LONG).show();
                     isExternalStorage = true;
                 } else {
                     Toast.makeText(this, "저장공간 권한을 승인 받아야합니다.\n어플을 재시작 해주세요.", Toast.LENGTH_LONG).show();
