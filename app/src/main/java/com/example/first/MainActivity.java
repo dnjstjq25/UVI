@@ -130,38 +130,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                gps = new Func_GPS(MainActivity.this);
-                funcSolarZenith = new Func_SolarZenith();
-                funcUVI = new Func_UVI();
-                funcNotice = new Func_Notice();
-
-                // GPS 사용유무 가져오기
-                if (gps.isGetLocation()) {
-                    // gps 출력
-                    latitude = gps.getLatitude();
-                    longitude = gps.getLongitude();
-                    gpsText.setText("위도 : " + String.format("%.2f", latitude) + "°\n경도 : " + String.format("%.2f", longitude) + "°");
-
-                    // 태양천정각 출력
-                    solarZenith = funcSolarZenith.getSolarZenith(latitude);
-                    solarZenithText.setText(solarZenith + "°");
-
-                    // UVI 출력
-                    modelPath = directory + "/model.tflite";
-                    uvi = funcUVI.Output((float) solarZenith, (float) illumValue, modelPath);
-                    uviText.setText(String.format("%.5f", uvi));
-
-                    // UVI 단계별 안내 출력
-                    funcNotice.changeNotice(uvi, uviText, notice, noticeText);
-
-                    gps.stopUsingGPS();
+                if (illumFlag) {
+                    Toast.makeText(MainActivity.this, "조도 측정을 먼저 눌러주세요.", Toast.LENGTH_LONG).show();
                 } else {
-                    // GPS를 사용할 수 없을경우
-                    gps.showSettingAlert();
+                    gps = new Func_GPS(MainActivity.this);
+                    funcSolarZenith = new Func_SolarZenith();
+                    funcUVI = new Func_UVI();
+                    funcNotice = new Func_Notice();
+
+                    // GPS 사용유무 가져오기
+                    if (gps.isGetLocation()) {
+                        // gps 출력
+                        latitude = gps.getLatitude();
+                        longitude = gps.getLongitude();
+                        gpsText.setText("위도 : " + String.format("%.2f", latitude) + "°\n경도 : " + String.format("%.2f", longitude) + "°");
+
+                        // 태양천정각 출력
+                        solarZenith = funcSolarZenith.getSolarZenith(latitude);
+                        solarZenithText.setText(solarZenith + "°");
+
+                        // UVI 출력
+                        modelPath = directory + "/model.tflite";
+                        uvi = funcUVI.Output((float) solarZenith, (float) illumValue, modelPath);
+                        uviText.setText(String.format("%.5f", uvi));
+
+                        // UVI 단계별 안내 출력
+                        funcNotice.changeNotice(uvi, uviText, notice, noticeText);
+
+                        gps.stopUsingGPS();
+                    } else {
+                        // GPS를 사용할 수 없을경우
+                        gps.showSettingAlert();
+                    }
                 }
             }
         });
-        callPermission();  // 권한 요청
     }
 
     @Override
@@ -263,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 public void run() {
                     Toast.makeText(
                             MainActivity.this,
-                            "다운로드가 완료되었습니다.",
+                            "모델 다운로드가 완료되었습니다.",
                             Toast.LENGTH_SHORT
                     ).show();
                 }
@@ -273,22 +276,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // 권한 요청
     private void callPermission() {
-        // Check the SDK version and whether the permission is already granted or not.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_ACCESS_FINE_LOCATION);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_ACCESS_COARSE_LOCATION);
-        } else {
-            isPermission = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_ACCESS_COARSE_LOCATION);
+            } else if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_ACCESS_FINE_LOCATION);
+            } else {
+                isPermission = true;
+            }
         }
     }
 
     private void callPermission2() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "저장소 사용을 위해 읽기/쓰기 권한 필요", Toast.LENGTH_SHORT).show();
-                }
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_EXTERNAL_STORAGE);
             } else {
                 isPermission2 = true;
@@ -298,15 +299,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSIONS_ACCESS_FINE_LOCATION
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            isAccessFineLocation = true;
-        } else if (requestCode == PERMISSIONS_ACCESS_COARSE_LOCATION
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            isAccessCoarseLocation = true;
-        } else if (requestCode == PERMISSIONS_EXTERNAL_STORAGE
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            isExternalStorage = true;
+        switch (requestCode) {
+            case PERMISSIONS_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isAccessFineLocation = true;
+                } else {
+                    Toast.makeText(this, "위치권한을 승인 받아야 합니다.", Toast.LENGTH_LONG).show();
+                }
+            }
+            case PERMISSIONS_ACCESS_COARSE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isAccessCoarseLocation = true;
+                } else {
+                    Toast.makeText(this, "위치권한을 승인 받아야 합니다.", Toast.LENGTH_LONG).show();
+                }
+                break;
+            }
+            case PERMISSIONS_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isExternalStorage = true;
+                } else {
+                    Toast.makeText(this, "저장공간 권한을 승인 받아야합니다.\n어플을 재시작 해주세요.", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                break;
+            }
         }
         if (isAccessFineLocation && isAccessCoarseLocation) {
             isPermission = true;
