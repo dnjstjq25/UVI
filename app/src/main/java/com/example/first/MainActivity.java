@@ -132,13 +132,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // 권한 요청
                 if (!isPermission) {
                     callPermission();
-                    return;
                 }
-
                 if (!modelFlag) {
                     Toast.makeText(MainActivity.this, "어플을 재시작 해주세요.", Toast.LENGTH_LONG).show();
-                } else if (illumFlag) {
-                    Toast.makeText(MainActivity.this, "조도 측정을 먼저 눌러주세요.", Toast.LENGTH_LONG).show();
                 } else {
                     gps = new Func_GPS(MainActivity.this);
                     funcSolarZenith = new Func_SolarZenith();
@@ -167,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         gps.stopUsingGPS();
                     } else {
                         // GPS를 사용할 수 없을경우
-                        gps.showSettingAlert();
+//                        gps.showSettingAlert();
                     }
                 }
             }
